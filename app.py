@@ -671,6 +671,40 @@ else:
 
     st.info(verdict)
 
+# ═════════════════════════════════════════════════════════════════
+# SECTION — OMBUDSMAN CALLOUT
+# ═════════════════════════════════════════════════════════════════
+st.markdown("""
+<div style='
+    background:#f0f7ff;
+    border:1px solid #90caf9;
+    border-left:5px solid #1565C0;
+    border-radius:8px;
+    padding:20px 24px;
+    margin-top:40px;
+    margin-bottom:24px;
+'>
+    <div style='font-size:16px; font-weight:bold; color:#1565C0; margin-bottom:8px;'>
+        🏛️ Have a complaint about your bank?
+    </div>
+    <div style='font-size:14px; color:#333333; line-height:1.7;'>
+        The <b>Ombudsman for Banking Services (OBS)</b> is a free, independent service that 
+        helps South African consumers resolve disputes with their banks. If your bank has not 
+        resolved your complaint satisfactorily, you can escalate it to the OBS at no cost.
+    </div>
+    <div style='margin-top:12px;'>
+        <a href='https://www.obs.org.za' target='_blank' style='
+            background:#1565C0;
+            color:white;
+            padding:8px 18px;
+            border-radius:6px;
+            text-decoration:none;
+            font-size:13px;
+            font-weight:bold;
+        '>Visit the OBS Website →</a>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # ═════════════════════════════════════════════════════════════════
 # SECTION 5 — FOOTER
