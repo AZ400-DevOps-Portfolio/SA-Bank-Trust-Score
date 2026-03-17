@@ -65,4 +65,3 @@ jobs:
           print(f'requirements.txt has {len(lines)} packages')
           [print(' -', l) for l in lines]
           "
-```
