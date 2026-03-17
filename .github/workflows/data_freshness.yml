@@ -1,0 +1,56 @@
+# ─────────────────────────────────────────────────────────────────
+# Data Freshness Monitor — SA Bank Trust Score
+# Runs on the 1st of every month and opens a GitHub Issue
+# automatically if any data file is older than 6 months.
+# Author: Lindiwe Songelwa
+# Org:    AZ400-DevOps-Portfolio
+# ─────────────────────────────────────────────────────────────────
+
+name: Data Freshness Monitor
+
+on:
+  schedule:
+    - cron: "0 8 1 * *"  # 1st of every month at 08:00 UTC
+  workflow_dispatch:       # Allow manual trigger for testing
+
+jobs:
+  freshness-check:
+    name: Check Data Freshness
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: write
+
+    steps:
+      # ── 1. Check out the code ──────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Set up Python ──────────────────────────────────────
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ── 3. Run freshness check ────────────────────────────────
+      - name: Run data freshness check
+        id: freshness
+        run: |
+          python scripts/check_data_freshness.py
+          echo "status=fresh" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      # ── 4. Open GitHub Issue if data is stale ─────────────────
+      - name: Open GitHub Issue if data is stale
+        if: steps.freshness.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const today = new Date().toISOString().split('T')[0];
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Data Refresh Required] Monthly check — ${today}`,
+              body: `## ⚠️ Data Freshness Alert\n\nThe automated monthly data freshness check has detected that one or more data files in the \`data/\` folder are older than **6 months** and may need updating.\n\n### Files to review:\n- \`data/complaints.csv\` — Source: OBS Annual Report\n- \`data/sanctions.csv\` — Source: SARB Prudential Authority\n- \`data/sentiment.csv\` — Source: DataEQ + Sagaci Research\n\n### Action required:\n1. Check each data source for updated figures\n2. Update the relevant CSV files\n3. Close this issue once data is refreshed\n\n---\n*This issue was opened automatically by the Data Freshness Monitor workflow.*`,
+              labels: ["data-refresh", "automated"]
+            });
