@@ -256,6 +256,114 @@ col3.metric("Years of Data", "2021 – 2025")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
+# ═════════════════════════════════════════════════════════════════
+# SECTION 2 — BANK RANKINGS WITH STAR SCORES
+# ═════════════════════════════════════════════════════════════════
+st.markdown("## 🏦 Bank Rankings")
+st.caption("Click a bank to see its detailed score breakdown.")
+
+def star_rating(score):
+    """Convert a 0-10 score to a 0-5 star display."""
+    stars_filled = int(round(score / 2))
+    stars_empty  = 5 - stars_filled
+    return "★" * stars_filled + "☆" * stars_empty
+
+DIMENSION_DESCRIPTIONS = {
+    "Complaint Resolution": (
+        "score_resolution",
+        "Measures how often a customer complaint is resolved by the bank before it escalates "
+        "to a formal case at the Ombudsman. A higher score means the bank handles issues "
+        "quickly and fairly at the first point of contact — a sign of a responsive and "
+        "customer-friendly institution."
+    ),
+    "Consumer Favour Rate": (
+        "score_favour",
+        "Of the complaints that did reach the Ombudsman, this measures how often the ruling "
+        "was decided in the consumer's favour rather than the bank's. A higher score reflects "
+        "a bank whose internal processes are more likely to be fair to customers."
+    ),
+    "Regulatory Record": (
+        "score_sanctions",
+        "Tracks the total financial penalties issued against each bank by the South African "
+        "Reserve Bank Prudential Authority for regulatory non-compliance between 2022 and 2025. "
+        "A higher score means fewer or no financial penalties — indicating stronger compliance "
+        "and governance standards."
+    ),
+    "Consumer Sentiment": (
+        "score_sentiment",
+        "Combines social media net sentiment (DataEQ 2024 — 3 million posts analysed) and "
+        "independent consumer satisfaction survey results (Sagaci Research 2025). A higher "
+        "score means consumers speak more positively about the bank both online and in surveys."
+    ),
+}
+
+# Logo badges in a row, ranked order
+logo_cols = st.columns(6)
+for i, (_, row) in enumerate(df.iterrows()):
+    with logo_cols[i]:
+        color = BANK_COLORS[row["bank"]]
+        short = row["bank"].replace(" ", "\n")
+        st.markdown(f"""
+        <div id='logo_{i}' style='
+            background:{color};
+            border-radius:10px;
+            padding:14px 6px;
+            text-align:center;
+            cursor:pointer;
+            margin-bottom:6px;
+        '>
+            <div style='font-size:11px; font-weight:bold; color:white; line-height:1.3;'>{row["bank"]}</div>
+            <div style='font-size:10px; color:rgba(255,255,255,0.8); margin-top:4px;'>#{i+1}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+# Bank selector below logos
+selected_logo_bank = st.selectbox(
+    "View detailed scores for:",
+    options=df["bank"].tolist(),
+    key="logo_bank_select"
+)
+
+logo_row = df[df["bank"] == selected_logo_bank].iloc[0]
+lcolor   = BANK_COLORS[selected_logo_bank]
+
+st.markdown(f"""
+<div style='
+    background:#f8f9fa;
+    border:1px solid #e0e0e0;
+    border-radius:10px;
+    padding:24px;
+    margin-top:8px;
+'>
+    <div style='font-size:20px; font-weight:bold; color:{lcolor}; margin-bottom:4px;'>
+        {selected_logo_bank}
+    </div>
+    <div style='font-size:26px; font-weight:bold; color:#333; margin-bottom:4px;'>
+        Overall Trust Score: {logo_row["trust_score"]:.1f}/10
+    </div>
+    <div style='font-size:18px; color:#f9a825; margin-bottom:20px; letter-spacing:2px;'>
+        {star_rating(logo_row["trust_score"])}
+    </div>
+""", unsafe_allow_html=True)
+
+for dim_name, (field, description) in DIMENSION_DESCRIPTIONS.items():
+    score = logo_row[field]
+    st.markdown(f"""
+    <div style='margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid #e0e0e0;'>
+        <div style='font-size:15px; font-weight:bold; color:#333;'>{dim_name}</div>
+        <div style='font-size:22px; color:#f9a825; letter-spacing:2px; margin:4px 0;'>
+            {star_rating(score)}
+            <span style='font-size:14px; color:#555; margin-left:8px;'>{score:.1f} / 10</span>
+        </div>
+        <div style='font-size:13px; color:#666; margin-top:6px; line-height:1.6;'>
+            {description}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("<hr style='border-color:#30363d;'>", unsafe_allow_html=True)
+
 
 # ═════════════════════════════════════════════════════════════════
 # SECTION 2 — OVERALL LEADERBOARD
