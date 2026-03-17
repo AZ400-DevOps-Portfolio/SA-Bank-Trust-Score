@@ -6,7 +6,7 @@
 
 ## 🔗 Demo Link
 
-👉 [View Live Streamlit Dashboard](https://banktrustscore.streamlit.app/)
+👉 [View Live Streamlit Dashboard](https://sa-bank-trust-score.streamlit.app/)
 
 ---
 
