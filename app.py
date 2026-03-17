@@ -202,11 +202,35 @@ df = build_scores(complaints, sanctions, sentiment)
 # SECTION 1 — HEADER
 # ═════════════════════════════════════════════════════════════════
 st.markdown("""
-<h1 style='text-align:center; color:white;'>🏦 South African Bank Trust Score</h1>
-<p style='text-align:center; color:#8b949e; font-size:17px;'>
-    Helping South African consumers choose a bank based on evidence, not marketing.
-</p>
-<hr style='border-color:#30363d;'>
+<div style='text-align:center; padding:32px 0 16px 0;'>
+    <div style='font-size:48px; margin-bottom:8px;'>🏦</div>
+    <h1 style='
+        font-size:36px;
+        font-weight:800;
+        color:#1a1a2e;
+        margin:0 0 8px 0;
+        letter-spacing:-0.5px;
+    '>South African Bank Trust Score</h1>
+    <p style='
+        font-size:16px;
+        color:#555555;
+        margin:0 auto;
+        max-width:520px;
+        line-height:1.6;
+    '>Helping South African consumers choose a bank based on <b>evidence</b>, not marketing.</p>
+    <div style='
+        display:inline-block;
+        margin-top:16px;
+        background:#1565C0;
+        color:white;
+        font-size:12px;
+        font-weight:600;
+        padding:4px 14px;
+        border-radius:20px;
+        letter-spacing:0.5px;
+    '>🇿🇦 INDEPENDENT · DATA-DRIVEN · FREE</div>
+</div>
+<hr style='border-color:#e0e0e0; margin-top:16px;'>
 """, unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
