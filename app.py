@@ -383,6 +383,65 @@ for dim_name, (field, description) in DIMENSION_DESCRIPTIONS.items():
 st.markdown("</div>", unsafe_allow_html=True)
 st.markdown("<hr style='border-color:#30363d;'>", unsafe_allow_html=True)
 
+# ═════════════════════════════════════════════════════════════════
+# SECTION — TRUST vs SENTIMENT SCATTER
+# ═════════════════════════════════════════════════════════════════
+st.markdown("## 📈 Trust Score vs Consumer Sentiment")
+st.caption(
+    "Does how consumers feel about a bank reflect its overall trust score? "
+    "Each dot represents one of the six banks. The trend line shows the correlation."
+)
+
+def trust_sentiment_chart(df):
+    fig, ax = plt.subplots(figsize=(10, 6))
+    fig.patch.set_facecolor("white")
+    ax.set_facecolor("white")
+
+    x = df["score_sentiment"]
+    y = df["trust_score"]
+
+    # Trend line
+    z = np.polyfit(x, y, 1)
+    p = np.poly1d(z)
+    x_line = np.linspace(x.min() - 0.5, x.max() + 0.5, 100)
+    ax.plot(x_line, p(x_line), "--", color="#aaaaaa", linewidth=1.5, label="Trend line")
+
+    # Plot each bank
+    for _, row in df.iterrows():
+        color = BANK_COLORS[row["bank"]]
+        ax.scatter(row["score_sentiment"], row["trust_score"],
+                   color=color, s=180, zorder=5, edgecolors="white", linewidths=1.5)
+        ax.annotate(
+            row["bank"],
+            xy=(row["score_sentiment"], row["trust_score"]),
+            xytext=(8, 4),
+            textcoords="offset points",
+            fontsize=10,
+            fontweight="bold",
+            color=color
+        )
+
+    ax.set_xlabel("Consumer Sentiment Score (0–10)", fontsize=12, color="#333333")
+    ax.set_ylabel("Overall Trust Score (0–10)", fontsize=12, color="#333333")
+    ax.set_title(
+        "Trust Score vs Consumer Sentiment — South African Banks\n"
+        "Combined DataEQ Social Media Sentiment & Sagaci Satisfaction Survey",
+        fontsize=13, pad=15, color="#333333"
+    )
+    ax.tick_params(colors="#333333")
+    ax.spines["bottom"].set_color("#dddddd")
+    ax.spines["left"].set_color("#dddddd")
+    ax.spines["top"].set_color("#dddddd")
+    ax.spines["right"].set_color("#dddddd")
+    ax.grid(alpha=0.3, color="#dddddd")
+    ax.legend(facecolor="white", edgecolor="#dddddd", labelcolor="#333333")
+    ax.set_xlim(x.min() - 1, x.max() + 1.5)
+    ax.set_ylim(y.min() - 1, y.max() + 1)
+
+    return fig
+
+st.pyplot(trust_sentiment_chart(df))
+st.markdown("<hr style='border-color:#30363d;'>", unsafe_allow_html=True)
 
 # ═════════════════════════════════════════════════════════════════
 # SECTION 2 — OVERALL LEADERBOARD
