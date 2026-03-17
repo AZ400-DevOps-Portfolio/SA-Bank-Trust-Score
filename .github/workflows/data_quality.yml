@@ -1,0 +1,38 @@
+# ─────────────────────────────────────────────────────────────────
+# Data Quality Workflow — SA Bank Trust Score
+# Validates all CSV data files on every push to main.
+# Author: Lindiwe Songelwa
+# Org:    AZ400-DevOps-Portfolio
+# ─────────────────────────────────────────────────────────────────
+
+name: Data Quality Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  data-quality:
+    name: Validate Data Files
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Check out the code ──────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Set up Python ──────────────────────────────────────
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ── 3. Install pandas only ────────────────────────────────
+      - name: Install dependencies
+        run: pip install pandas
+
+      # ── 4. Run data quality checks ────────────────────────────
+      - name: Run data quality checks
+        run: python scripts/check_data_quality.py
