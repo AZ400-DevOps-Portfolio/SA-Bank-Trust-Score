@@ -1,0 +1,31 @@
+# ─────────────────────────────────────────────────────────────────
+# .dockerignore — SA Bank Trust Score
+# Tells Docker which files to exclude from the container.
+# Keeps the image lean and secure.
+# ─────────────────────────────────────────────────────────────────
+
+# Git files
+.git
+.gitignore
+
+# GitHub Actions
+.github/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Notebooks — not needed in production container
+notebooks/
+
+# Local environment files
+.env
+*.env
+
+# VS Code
+.vscode/
+
+# README
+README.md

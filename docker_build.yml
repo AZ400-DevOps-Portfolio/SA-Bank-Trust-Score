@@ -1,0 +1,43 @@
+# ─────────────────────────────────────────────────────────────────
+# Docker Build Workflow — SA Bank Trust Score
+# Builds the Docker image on every push to main to verify
+# the app can always be containerised cleanly.
+# Author: Lindiwe Songelwa
+# Org:    AZ400-DevOps-Portfolio
+# ─────────────────────────────────────────────────────────────────
+
+name: Docker Build Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  docker-build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Check out the code ──────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Set up Docker Buildx ───────────────────────────────
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # ── 3. Build the Docker image ─────────────────────────────
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: sa-bank-trust-score:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # ── 4. Confirm build success ──────────────────────────────
+      - name: Confirm build success
+        run: echo "✅ Docker image built successfully"
